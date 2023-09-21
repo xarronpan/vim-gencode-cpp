@@ -73,7 +73,6 @@ function! s:GetParentClassName(className) "{{{
     let l:oldPosition = getpos('.')
     normal [{
     let l:classBraceLine = line('.')
-    echom l:classBraceLine
     let l:className     = <SID>GetClassName(l:classBraceLine)
     if empty(l:className) || l:className == a:className
       call setpos('.', l:oldPosition)
