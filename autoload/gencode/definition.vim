@@ -79,7 +79,6 @@ function! s:GetParentClassName(className) "{{{
       return ''
     endif
     let l:pClassName = <SID>GetParentClassName(l:className)
-    call setpos('.', l:oldPosition)
     if empty(l:pClassName) 
       return l:className
     endif
@@ -179,8 +178,8 @@ function! gencode#definition#Generate() "{{{
     normal [{
     let l:classBraceLine = line('.')
     let l:className     = <SID>GetClassName(l:classBraceLine)
-    let l:parentClassName     = <SID>GetParentClassName(l:className)
     let l:templateTypeList   = <SID>GetTemplate(l:classBraceLine, l:className)
+    let l:parentClassName     = <SID>GetParentClassName(l:className)
 
     let l:templateTypeBody = ''
     if !empty(l:className) && !empty(l:templateTypeList)
@@ -196,7 +195,15 @@ function! gencode#definition#Generate() "{{{
         let l:className = l:className . l:templateTypeBody
     endif
 
-    let l:getNamespaceLine = empty(l:className) ? l:line : l:classBraceLine
+    "let l:getNamespaceLine = empty(l:className) ? l:line : l:classBraceLine
+    let l:getNamespaceLine = l:line
+    if !empty(l:className) 
+      if !empty(l:parentClassName)
+        let l:getNamespaceLine = line('.')
+      else
+        let l:getNamespaceLine = l:classBraceLine
+      endif
+    endif
 
     let l:namespaceList = <SID>GetNamespaceList(l:getNamespaceLine)
     call cursor(l:getNamespaceLine, 0)
