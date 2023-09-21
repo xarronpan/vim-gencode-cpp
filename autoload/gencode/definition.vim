@@ -69,6 +69,24 @@ function! s:GetClassName(line) "{{{
     return l:className
 endfunction "}}}
 
+function! s:GetParentClassName(className) "{{{
+    let l:oldPosition = getpos('.')
+    normal [{
+    let l:classBraceLine = line('.')
+    echom l:classBraceLine
+    let l:className     = <SID>GetClassName(l:classBraceLine)
+    if empty(l:className) || l:className == a:className
+      call setpos('.', l:oldPosition)
+      return ''
+    endif
+    let l:pClassName = <SID>GetParentClassName(l:className)
+    call setpos('.', l:oldPosition)
+    if empty(l:pClassName) 
+      return l:className
+    endif
+    return l:pClassName . '::' . l:className
+endfunction "}}}
+
 function! s:GetTemplate(line, className) "{{{
     if empty(a:className)
         return []
@@ -162,6 +180,7 @@ function! gencode#definition#Generate() "{{{
     normal [{
     let l:classBraceLine = line('.')
     let l:className     = <SID>GetClassName(l:classBraceLine)
+    let l:parentClassName     = <SID>GetParentClassName(l:className)
     let l:templateTypeList   = <SID>GetTemplate(l:classBraceLine, l:className)
 
     let l:templateTypeBody = ''
@@ -224,7 +243,11 @@ function! gencode#definition#Generate() "{{{
     endif
 
     if !empty(l:className) 
+      if empty(l:parentClassName)
         let l:lineContent = l:returnType . l:namespace . l:className . '::' . l:functionBody
+      else
+        let l:lineContent = l:returnType . l:namespace . l:parentClassName . '::' . l:className . '::' . l:functionBody
+      endif
     else
         let l:lineContent = l:returnType . l:namespace . l:functionBody
     endif
