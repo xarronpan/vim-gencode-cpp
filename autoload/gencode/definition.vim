@@ -62,7 +62,7 @@ function! s:FormatDeclaration(declaration) "{{{
     let l:lineContent = a:declaration
 
     " remove virtual, static, explicit key word
-    let l:lineContent = substitute(l:lineContent, '\%(virtual\|static\|explicit\|inline\)\s\+', '', 'g')
+    let l:lineContent = substitute(l:lineContent, '\%(virtual\|static\|explicit\|inline\|public\s*:\|private\s*:\|protected\s*:\)\s\+', '', 'g')
 
     " remove trailing specifiers that will not appear in the definition
     let l:lineContent = substitute(l:lineContent, '\s*\%(override\|final\)\s*', '', 'g')
