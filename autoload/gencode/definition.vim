@@ -26,7 +26,7 @@ function! s:GetDeclaration(line) "{{{
 
     let l:matched = match(l:function, '\w\+\_\s*(')
     if l:matched == -1
-      return ""
+        return ""
     endif
 
     return l:function
@@ -48,7 +48,7 @@ function! s:GetDeclarationForward() "{{{
 
     let l:matched = match(l:function, '\w\+\_\s*(')
     if l:matched == -1
-      return ""
+        return ""
     endif
 
     return l:function

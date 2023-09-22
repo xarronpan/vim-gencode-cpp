@@ -50,6 +50,25 @@ function! gencode#declaration#Generate() "{{{
     endif
 
     let l:functionDeclareList = getline(l:curline, l:functionLeftBraces)
+
+    let l:matched = match(l:functionDeclareList, '\w\+\_\s*(')
+    if l:matched == -1
+        normal [(b
+        let l:curline = line('.')
+        let l:functionLeftBraces = search('{', 'n')
+        if l:functionLeftBraces == 0
+            let l:functionLeftBraces = l:curline
+        endif
+
+        let l:functionDeclareList = getline(l:curline, l:functionLeftBraces)
+
+        let l:matched = match(l:functionDeclareList, '\w\+\_\s*(')
+        if l:matched == -1
+            echom 'definition not found'
+            return
+        endif
+    endif
+
     let l:functionDeclare = join(l:functionDeclareList, ' ')
     let l:functionDeclare = substitute(l:functionDeclare, '\s\s\+', ' ', 'g')
     let l:functionDeclare = substitute(l:functionDeclare, '\s*\([(;]\)\s*', '\1', 'g')
