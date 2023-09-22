@@ -138,6 +138,17 @@ function! s:GetTemplate(line, className) "{{{
     return l:typeList
 endfunction "}}}
 
+function! s:GetFunctionTemplate(line, funcName) "{{{
+    if empty(a:funcName)
+        return 0
+    endif
+
+    call cursor(a:line, 0)
+    echom a:funcName
+    let l:searchTemplate = search('template\_\s*<\%(\%(typename\|class\)\_\s\+\w\+\_\s*\%(\_\s*=\_\s*\S\+\)\?\_\s*,\?\_\s*\)\+>\s*\_s\?.*\<' . a:funcName . '\>', 'b')
+    return searchTemplate
+endfunction "}}}
+
 function! s:GetNamespaceList(line) "{{{
     call cursor(a:line, 0)
     normal [{
@@ -192,9 +203,9 @@ function! gencode#definition#Generate() "{{{
     let l:needChangeFile = !l:isInline && l:fileExtend ==? 'h'
 
     let l:formatedDeclaration  = <SID>FormatDeclaration(l:declaration)
-    let l:declarationDecompose = matchlist(l:formatedDeclaration, '\(\%(\%(\w[a-zA-Z0-9_:*&<>,]*\)\s\)*\)\(\~\?\w[a-zA-Z0-9_]*\s*\((\?.*)\)\?\s*\%(const\)\?\)\s*\%(=\s*\w\+\)\?\s*;') " match function declare, \1 match return type, \2 match function name and argument, \3 match argument
+    let l:declarationDecompose = matchlist(l:formatedDeclaration, '\(\%(\%(\w[a-zA-Z0-9_:*&<>,]*\)\s\)*\)\(\~\?\(\w[a-zA-Z0-9_]*\)\s*\((\?.*)\)\?\s*\%(const\)\?\)\s*\%(=\s*\w\+\)\?\s*;') " match function declare, \1 match return type, \2 match function name and argument, \3 match argument
     try
-        let [l:matchall, l:returnType, l:functionBody, l:argument, l:assign; l:rest] = l:declarationDecompose
+        let [l:matchall, l:returnType, l:functionBody, l:functionName, l:argument, l:assign; l:rest] = l:declarationDecompose
         let l:functionBody = substitute(l:functionBody, '\_\s*=[^,)]\+\([,)]\)\?', '\1', 'g')
     catch
         return
@@ -208,6 +219,24 @@ function! gencode#definition#Generate() "{{{
     if empty(l:argument) && !empty(l:assign)
         echom "no need to define"
         return
+    endif
+
+    let l:templatePos = <SID>GetFunctionTemplate(l:line, l:functionName)
+    echom l:templatePos
+    if l:templatePos != 0
+        call cursor(l:templatePos, 0)
+        let l:line        = line('.')
+        let l:declareationFileName = expand('%')
+        let l:declaration = <SID>GetDeclaration(l:line)
+
+        let l:formatedDeclaration  = <SID>FormatDeclaration(l:declaration)
+        let l:declarationDecompose = matchlist(l:formatedDeclaration, '\(\%(\%(\w[a-zA-Z0-9_:*&<>,]*\)\s\)*\)\(\~\?\w[a-zA-Z0-9_]*\s*\((\?.*)\)\?\s*\%(const\)\?\)\s*\%(=\s*\w\+\)\?\s*;') " match function declare, \1 match return type, \2 match function name and argument, \3 match argument
+        try
+            let [l:matchall, l:returnType, l:functionBody, l:argument, l:assign; l:rest] = l:declarationDecompose
+            let l:functionBody = substitute(l:functionBody, '\_\s*=[^,)]\+\([,)]\)\?', '\1', 'g')
+        catch
+            return
+        endtry
     endif
 
     " jump to previous unmatch {
