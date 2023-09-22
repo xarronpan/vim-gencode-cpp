@@ -23,6 +23,34 @@ function! s:GetDeclaration(line) "{{{
     endif
     let l:functionList = getline(l:functionBeginLine, l:functionEndLine)
     let l:function     = join(l:functionList, " ")
+
+    let l:matched = match(l:function, '\w\+\_\s*(')
+    if l:matched == -1
+      return ""
+    endif
+
+    return l:function
+endfunction "}}}
+
+function! s:GetDeclarationForward() "{{{
+    let l:pos = getpos('.')
+    normal [(b
+    let l:line = line('.')
+    call cursor(l:line, 0)
+    let l:functionBeginLine   = l:line
+    let l:functionEndLine     = search(';\|{', 'n')
+    call setpos('.', l:pos)
+    if l:functionEndLine == 0
+        let l:functionEndLine = l:functionBeginLine
+    endif
+    let l:functionList = getline(l:functionBeginLine, l:functionEndLine)
+    let l:function     = join(l:functionList, " ")
+
+    let l:matched = match(l:function, '\w\+\_\s*(')
+    if l:matched == -1
+      return ""
+    endif
+
     return l:function
 endfunction "}}}
 
@@ -144,6 +172,14 @@ function! gencode#definition#Generate() "{{{
     let l:line        = line('.')
     let l:declareationFileName = expand('%')
     let l:declaration = <SID>GetDeclaration(l:line)
+
+    if empty(l:declaration)
+        let l:declaration = <SID>GetDeclarationForward()
+        if empty(l:declaration)
+          echom "declaration not found"
+        endif
+    endif
+
     if match(l:declaration, '{') != -1
         echom "has defined"
         return
