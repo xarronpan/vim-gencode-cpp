@@ -144,7 +144,6 @@ function! s:GetFunctionTemplate(line, funcName) "{{{
     endif
 
     call cursor(a:line, 0)
-    echom a:funcName
     let l:searchTemplate = search('template\_\s*<\%(\%(typename\|class\)\_\s\+\w\+\_\s*\%(\_\s*=\_\s*\S\+\)\?\_\s*,\?\_\s*\)\+>\s*\_s\?.*\<' . a:funcName . '\>', 'b')
     return searchTemplate
 endfunction "}}}
@@ -222,8 +221,8 @@ function! gencode#definition#Generate() "{{{
     endif
 
     let l:templatePos = <SID>GetFunctionTemplate(l:line, l:functionName)
-    echom l:templatePos
     if l:templatePos != 0
+        let l:needChangeFile = 0
         call cursor(l:templatePos, 0)
         let l:line        = line('.')
         let l:declareationFileName = expand('%')
