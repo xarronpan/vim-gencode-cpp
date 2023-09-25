@@ -6,6 +6,15 @@
 "   email: tenfy@tenfy.cn
 " created: 2016-06-06 15:03:16
 "==============================================================
+function! s:SearchFunction(content, line)
+    let l:content = substitute(a:content, ';', '', 'g')
+    let l:content = escape(l:content, '.*~\')
+    let l:content = substitute(l:content, '\(\\\*\|\\\&\)', '\\_\\s*\1\\_\\s*', 'g')
+    let l:content = substitute(l:content, ' ', '\\_\\s*', 'g')
+    let l:content = substitute(l:content, '\([,()<>:]\)', '\\_\\s*\1\\_\\s*', 'g')
+    let l:searchResult = search(l:content, 'bn', a:line)
+    return l:searchResult
+endfunction
 
 function! s:GetInsertSpace(spaceName) "{{{
     let l:spaceList = split(a:spaceName, '::')
@@ -96,7 +105,8 @@ function! gencode#declaration#Generate() "{{{
     let l:appendContent = substitute(l:appendContent, '\s*$', '', '')
     let l:appendContent = l:appendContent . ';'
 
-    let l:findLine = search('\V'.l:appendContent, 'bn', l:spaceNameLine)
+    "let l:findLine = search('\V'.l:appendContent, 'bn', l:spaceNameLine)
+    let l:findLine = <SID>SearchFunction(l:appendContent, l:spaceNameLine)
     if l:findLine > 0
         call cursor(l:findLine - 1, 0)
         echom l:appendContent . ' existed'
