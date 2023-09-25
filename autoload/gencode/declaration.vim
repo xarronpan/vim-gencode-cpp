@@ -108,7 +108,7 @@ function! gencode#declaration#Generate() "{{{
     "let l:findLine = search('\V'.l:appendContent, 'bn', l:spaceNameLine)
     let l:findLine = <SID>SearchFunction(l:appendContent, l:spaceNameLine)
     if l:findLine > 0
-        call cursor(l:findLine - 1, 0)
+        call cursor(l:findLine, 0)
         echom l:appendContent . ' existed'
         return
     endif

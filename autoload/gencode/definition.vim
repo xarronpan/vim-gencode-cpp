@@ -174,7 +174,6 @@ function! s:SearchFunction(content, line)
     let l:content = substitute(l:content, '\(\\\*\|\\\&\)', '\\_\\s*\1\\_\\s*', 'g')
     let l:content = substitute(l:content, ' ', '\\_\\s*', 'g')
     let l:content = substitute(l:content, '\([,()<>:]\)', '\\_\\s*\1\\_\\s*', 'g')
-    let l:content = l:content . '\_\s*{'
     let l:searchResult = search(l:content, '', a:line)
     return l:searchResult
 endfunction
