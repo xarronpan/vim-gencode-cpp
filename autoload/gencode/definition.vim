@@ -171,9 +171,9 @@ endfunction "}}}
 
 function! s:SearchFunction(content, line)
     let l:content = escape(a:content, '.*~\')
-    let l:content = substitute(l:content, '\(\\\*\|\\\&\)', '\\_\\s*\1\\_\\s*', 'g')
+    let l:content = substitute(l:content, '\(\\\*\)', '\\_\\s*\1\\_\\s*', 'g')
     let l:content = substitute(l:content, ' ', '\\_\\s*', 'g')
-    let l:content = substitute(l:content, '\([,()<>:]\)', '\\_\\s*\1\\_\\s*', 'g')
+    let l:content = substitute(l:content, '\([,()<>:&]\)', '\\_\\s*\1\\_\\s*', 'g')
     let l:searchResult = search(l:content, '', a:line)
     return l:searchResult
 endfunction
