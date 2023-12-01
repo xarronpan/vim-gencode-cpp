@@ -65,7 +65,7 @@ function! s:FormatDeclaration(declaration) "{{{
     let l:lineContent = substitute(l:lineContent, '\%(virtual\|static\|explicit\|inline\|public\s*:\|private\s*:\|protected\s*:\)\s\+', '', 'g')
 
     " remove trailing specifiers that will not appear in the definition
-    let l:lineContent = substitute(l:lineContent, '\s*\%(override\|final\)\s*', '', 'g')
+    let l:lineContent = substitute(l:lineContent, '\s*\%(override\|final\|OVERRIDE\|FINAL\)\s*', '', 'g')
 
     let l:lineContent = substitute(l:lineContent, '^\s\+', '', '') " delete header space
     let l:lineContent = substitute(l:lineContent, '\(\w\+\)\s*\(\%(\*\|&\)\+\)\s*\(\S\+(\)', '\1\2 \3', '')  " format to: int* func(...);
