@@ -203,7 +203,7 @@ function! gencode#definition#Generate() "{{{
     let l:needChangeFile = !l:isInline && l:fileExtend ==? 'h'
 
     let l:formatedDeclaration  = <SID>FormatDeclaration(l:declaration)
-    let l:declarationDecompose = matchlist(l:formatedDeclaration, '\(\%(\%(\w[a-zA-Z0-9_:*&<>,]*\)\s\)*\)\(\~\?\(\w[a-zA-Z0-9_]*\)\s*\((\?.*)\)\?\s*\%(const\)\?\)\s*\%(=\s*\w\+\)\?\s*;') " match function declare, \1 match return type, \2 match function name and argument, \3 match argument
+    let l:declarationDecompose = matchlist(l:formatedDeclaration, '\(\%(\%(\w[a-zA-Z0-9_:*&<>, /]*\)\s\)*\)\(\~\?\(\w[a-zA-Z0-9_]*\)\s*\((\?.*)\)\?\s*\%(const\)\?\)\s*\%(=\s*\w\+\)\?\s*;') " match function declare, \1 match return type, \2 match function name and argument, \3 match argument
     try
         let [l:matchall, l:returnType, l:functionBody, l:functionName, l:argument, l:assign; l:rest] = l:declarationDecompose
         let l:functionBody = substitute(l:functionBody, '\_\s*=[^,)]\+\([,)]\)\?', '\1', 'g')
