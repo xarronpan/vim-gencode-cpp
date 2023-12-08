@@ -83,7 +83,8 @@ function! gencode#declaration#Generate() "{{{
     let l:functionDeclare = substitute(l:functionDeclare, '\s*\([(;]\)\s*', '\1', 'g')
     let l:functionDeclare = substitute(l:functionDeclare, '\s*\()\)', '\1', 'g')
     let l:functionDeclare = substitute(l:functionDeclare, '\(\w\+\)\s*\(\*\|&\+\)\s*\(\w\+\)', '\1\2 \3', '')  " format to: int* func(...);
-    let l:functionMatchList = matchlist(l:functionDeclare, '^\s*\(\%(\%(\w[a-zA-Z0-9_:*&<>]*\)\s\)\+\)\(\%(\w[a-zA-Z0-9_]*::\)*\)\(\S\+\s*(.*)\s*\%(const\)\?\)') " \1 match return type, \2 match class name, \3 match function name and argument
+    "let l:functionMatchList = matchlist(l:functionDeclare, '^\s*\(\%(\%(\w[a-zA-Z0-9_:*&<>]*\)\s\)\+\)\(\%(\w[a-zA-Z0-9_]*::\)*\)\(\S\+\s*(.*)\s*\%(const\)\?\)') " \1 match return type, \2 match class name, \3 match function name and argument
+    let l:functionMatchList = matchlist(l:functionDeclare, '^\s*\(\%(\w[a-zA-Z0-9_:*&<> ]*\)\s\+\)\(\%(\w[a-zA-Z0-9_]*::\)*\)\(\S\+\s*(.*)\s*\%(const\)\?\)') " \1 match return type, \2 match class name, \3 match function name and argument
     try
         let [l:matchall, l:returnType, l:spaceName, l:functionName; l:rest] = l:functionMatchList
     catch
